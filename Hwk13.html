@@ -1,0 +1,125 @@
+<html>
+    <head>
+        <script type="text/javascript">
+            function runAjax()
+            {
+                //creating ajaxObject
+                if (window.XMLHttpRequest) var ajaxObject = new XMLHttpRequest();
+                else var ajaxObject = new ActiveXObject("Microsoft",XMLHTTP);
+                
+                //going to the database in the server to get the unit prices
+                ajaxObject.open("GET","getunitprices.php",true);
+                ajaxObject.send();
+                
+                //receiving the unit prices from the server
+                ajaxObject.onreadystatechange = function()
+                {
+                    if (ajaxObject.readyState==4 && ajaxObject.status==200)
+                    {
+                        var allunitprices = ajaxObject.responseText.trim().split(" ");
+                        var adPrice= allunitprices[0];
+                        var sePrice = allunitprices[1];
+                        var stPrice = allunitprices[2];
+                        
+                        document.getElementById("ad_unitPrice").innerHTML=adPrice;
+                        document.getElementById("se_unitPrice").innerHTML=sePrice;
+                        document.getElementById("st_unitPrice").innerHTML=stPrice;
+                    }
+                }
+            } //end of runAjax()
+            
+            function runTotal()
+            {
+                //reading the quantities
+                var adult_qty = document.getElementById("ad_qty").value;
+                var senior_qty = document.getElementById("se_qty").value;
+                var student_qty = document.getElementById("st_qty").value;
+                
+                //reading the unit prices
+                var adult_price = document.getElementById("ad_unitPrice").innerHTML;
+                var senior_price = document.getElementById("se_unitPrice").innerHTML;
+                var student_price = document.getElementById("st_unitPrice").innerHTML;
+                
+                //computing individual totals
+                var adult_total_amount = adult_qty * adult_price;
+                var senior_total_amount = senior_qty * senior_price;
+                var student_total_amount = student_qty * student_price;
+                
+                //grand total for all visitors
+                var total_visitor_amount = adult_total_amount + senior_total_amount + student_total_amount;
+                
+                //ready to write into the total div
+                document.getElementById("total").innerHTML = total_visitor_amount;
+            }
+        </script>
+        
+    </head>
+    <body onload="runAjax()">
+        <table border="1">
+            <tr>
+                <th colspan="3">MOMA Ticketing</th>
+            </tr>
+            <tr>
+                <td></td>
+                <th>Unit Price</th>
+                <th>Quantity</th>
+            </tr>
+            <tr>
+                <th>Adult (>= 18yo)</th>
+                <td>
+                    <div id="ad_unitPrice"></div>
+                </td>
+                <td>
+                    <input type="number" value="0" id="ad_qty" min="1" onchange="runTotal()"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Seniors (>= 65yo)</th>
+                <td>
+                    <div id="se_unitPrice"></div>
+                </td>
+                <td>
+                    <input type="number" id="se_qty" value="0" min="1" onchange="runTotal()"/>
+                </td>
+            </tr>
+            <tr>
+                <th>Students (ID)</th>
+                <td>
+                    <div id="st_unitPrice"></div>
+                </td>
+                <td>
+                    <input type="number" id="st_qty" value="0" min="1" onchange="runTotal()"/>
+                </td>
+            </tr>
+            <tr>
+                <th align="right" colspan="2">Total:</th>
+                <td>
+                    <div id="total"></div>
+                </td>
+            </tr>
+        </table>
+        <div id="debug"></div>
+    </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
